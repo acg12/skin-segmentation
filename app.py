@@ -15,7 +15,7 @@ THRESHOLD = 0.5
 
 # Set Page
 st.set_page_config(layout='wide')
-
+tf.keras.backend.clear_session()
 model = residual_unet.Residual_UNet()
 model.load_weights('resunet_preproc_best_weight')
 model.compile(optimizer=tf.keras.optimizers.legacy.Adam(), 
