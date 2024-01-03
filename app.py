@@ -19,13 +19,10 @@ tf.keras.backend.clear_session()
 
 @st.cache_resource
 def load_model():
-  try:
-    model = residual_unet.Residual_UNet()
-    model.load_weights('resunet_preproc_best_weight').expect_partial()
-    model.compile(optimizer=tf.keras.optimizers.legacy.Adam(), 
-                  loss=metrics.dice_coef_loss, metrics=['accuracy', metrics.dice_coef])
-  except:
-    st.text('Error')
+  model = residual_unet.Residual_UNet()
+  model.load_weights('resunet_preproc_best_weight').expect_partial()
+  model.compile(optimizer=tf.keras.optimizers.legacy.Adam(), 
+                loss=metrics.dice_coef_loss, metrics=['accuracy', metrics.dice_coef])
   
   return model
 
