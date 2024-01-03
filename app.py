@@ -16,10 +16,20 @@ THRESHOLD = 0.5
 # Set Page
 st.set_page_config(layout='wide')
 tf.keras.backend.clear_session()
-model = residual_unet.Residual_UNet()
-model.load_weights('resunet_preproc_best_weight')
-model.compile(optimizer=tf.keras.optimizers.legacy.Adam(), 
+
+@st.cache_resource
+def load_model():
+  try:
+    model = residual_unet.Residual_UNet()
+    model.load_weights('resunet_preproc_best_weight').expect_partial()
+    model.compile(optimizer=tf.keras.optimizers.legacy.Adam(), 
                   loss=metrics.dice_coef_loss, metrics=['accuracy', metrics.dice_coef])
+  except:
+    st.text('Error')
+  
+  return model
+
+model = load_model()
 st.title('Skin Lesion Segmentation')
 
 uploaded_file = st.file_uploader("Upload an image")
