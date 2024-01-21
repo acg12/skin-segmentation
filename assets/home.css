@@ -14,8 +14,10 @@
 }
 
 .main {
-    /* background-image: url("./images/test.png") !important;
-    background-size: contain !important; */
+    background-image: url(https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/assets/images/background.jpg) !important;
+    background-size: cover !important;
+    background-position-y: top;
+    background-position-x: center;
     /* background: green; */
     width: 100vw;
     height: 100vh;
@@ -35,22 +37,24 @@
 }
 
 /* Main button */
-.st-emotion-cache-7ym5gk {
+.try-btn-title {
     border: none !important;
     background-color: #05796B !important;
     padding: 0.3em 3em;
     border-radius: 5rem !important;
     box-shadow: 5px 25px 30px rgba(5, 121, 107, 0.2);
-}
-
-.st-emotion-cache-7ym5gk > div > p {
-    font-size: 32px !important;
-    /* font-family: manrope-semibold !important; */
-    color: white;
+    width: max-content;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
+}
+
+.try-btn-title > a {
+    font-size: 32px !important;
+    /* font-family: manrope-semibold !important; */
+    color: white;
+    text-decoration: none;
 }
 
 /* Text */
@@ -78,5 +82,10 @@
 }
 
 .my-container {
-    height: 10vw;
+    height: 22vh;
+}
+
+iframe{
+    visibility: hidden;
+    height: 0rem;
 }

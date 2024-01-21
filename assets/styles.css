@@ -120,11 +120,19 @@
 
 iframe{
     visibility: hidden;
+    height: 0rem;
 }
 
 header {
     visibility: hidden;
 }
+
+/* section:nth-of-type(1) {
+    visibility: hidden;
+    width: 0rem !important;
+    height: 0rem !important;
+    position: absolute !important;
+} */
 
 .st-emotion-cache-zq5wmm {
     visibility: hidden;

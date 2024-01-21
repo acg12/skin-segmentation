@@ -1,7 +1,6 @@
 import streamlit as st
-import streamlit.components.v1 as components
-from streamlit_extras.stylable_container import stylable_container
-from streamlit_extras.row import row
+from streamlit_extras.add_vertical_space import add_vertical_space
+from streamlit_extras.switch_page_button import switch_page
 from streamlit.components.v1 import html
 
 def load_view():
@@ -13,8 +12,9 @@ def load_view():
     # row1.button("Try Now2")
     # row1.button("Try Now3")
 
+    add_vertical_space(15)
     st.markdown("""
-        <div class="d-flex flex-column justify-content-around my-container mb-5">
+        <div class="d-flex flex-column align-items-center justify-content-between my-container">
             <div class="text title">
                 Perform Segmentation with SkinCam
             </div>
@@ -23,7 +23,24 @@ def load_view():
                     Witness the power of Deep Learning through our app, which takes a dermoscopic image of a skin lesion and performs segmentation to produce a binary mask of where the lesion is in the image.
                 </div>
             </div>
+            <div class="try-btn-title">
+                <a href="/?nav=try-now" class="try-btn-title-a">Try for free</a>
+            </div>
         </div>
     """, unsafe_allow_html=True)
-    st.button("Try for free")
+
+    html('''
+        <script>
+            var navigationTabs = window.parent.document.getElementsByClassName("try-btn-title-a");
+            var cleanNavbar = function(navigation_element) {
+                navigation_element.removeAttribute('target')
+                console.log(navigation_element)
+            }
+            
+            for (var i = 0; i < navigationTabs.length; i++) {
+                cleanNavbar(navigationTabs[i]);
+            }
+        </script>
+    ''')
+
     
