@@ -1,0 +1,82 @@
+@font-face {
+    font-family: manrope-extrabold;
+    src: url("./fonts/Manrope-ExtraBold.ttf");
+}
+
+@font-face {
+    font-family: manrope-regular;
+    src: url("./fonts/Manrope-Regular.ttf");
+}
+
+@font-face {
+    font-family: manrope-semibold;
+    src: url("./fonts/Manrope-SemiBold.ttf");
+}
+
+.main {
+    /* background-image: url("./images/test.png") !important;
+    background-size: contain !important; */
+    /* background: green; */
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.row-widget {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Main button */
+.st-emotion-cache-7ym5gk {
+    border: none !important;
+    background-color: #05796B !important;
+    padding: 0.3em 3em;
+    border-radius: 5rem !important;
+    box-shadow: 5px 25px 30px rgba(5, 121, 107, 0.2);
+}
+
+.st-emotion-cache-7ym5gk > div > p {
+    font-size: 32px !important;
+    /* font-family: manrope-semibold !important; */
+    color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Text */
+.text {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Main title */
+.title {
+    font-weight: 700;
+    font-size: 60px;
+    color: black;
+    text-align: center;
+}
+
+/* Caption title */
+.caption {
+    font-size: 20px;
+    color: #41658A;
+    width: 50vw;
+    text-align: center;
+}
+
+.my-container {
+    height: 10vw;
+}
