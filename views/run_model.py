@@ -4,6 +4,7 @@ from streamlit_js_eval import streamlit_js_eval
 from streamlit_image_select import image_select
 from streamlit_extras.add_vertical_space import add_vertical_space
 import time
+import base64
 import urllib
 import numpy as np
 import cv2
@@ -24,6 +25,7 @@ SELECTED_IMAGE = None
 UPLOADED_FILE = None
 PREPROCESSED_IMAGE = None
 PREDICTION = None
+UPLOADED_FILE_BYTES = None
 MODEL = None
 PHASE = 1
 
@@ -96,13 +98,14 @@ def upload_view():
     </div>
   ''', unsafe_allow_html=True)
 
-  UPLOADED_FILE = st.file_uploader("Upload an image")
+  UPLOADED_FILE = st.file_uploader("Upload an image", accept_multiple_files=False, type=['png'], label_visibility="collapsed")
 
   _, col2, _ = st.columns([2, 1, 2])
 
   if UPLOADED_FILE is not None:
     bytes_data = UPLOADED_FILE.getvalue()
-    image = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
+    buffer = np.frombuffer(bytes_data, np.uint8)
+    image = cv2.imdecode(buffer, cv2.IMREAD_COLOR)
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image_rgb = Image.fromarray(image_rgb)
 
@@ -121,6 +124,7 @@ def loading_view():
   global SELECTED_IMAGE
   global PREPROCESSED_IMAGE
   global PREDICTION
+  global UPLOADED_FILE_BYTES
   global MODEL
 
   st.markdown(f'''
@@ -131,23 +135,41 @@ def loading_view():
 
   add_vertical_space(5)
 
-  st.markdown(f'''
-    <div class="d-flex flex-row justify-content-center">
-      <div class="loader"></div>
-    </div>
-  ''', unsafe_allow_html=True)
-
   # Read the file
   if UPLOADED_FILE is None:
     req = urllib.request.urlopen(str(SELECTED_IMAGE))
-    arr = np.asarray(bytearray(req.read()), dtype=np.uint8)
+    read = req.read()
+    
+    bytes = bytearray(read)
+
+    arr = np.asarray(bytes, dtype=np.uint8)
     img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+    base64_data = base64.b64encode(read).decode('utf8')
+
     UPLOADED_FILE = img
+    UPLOADED_FILE_BYTES = base64_data
     print(UPLOADED_FILE.shape)
 
   if UPLOADED_FILE is None:
     streamlit_js_eval(js_expressions="parent.window.open('/?nav=try-now', name='_self')")
     return
+  
+  st.markdown(f'''
+    <div class="d-flex flex-row justify-content-center" style="height: max-content">
+      <div>
+        <img id="preview-img" class="rounded-4" src="data:image/png;base64,{UPLOADED_FILE_BYTES}">
+        <div class="loader-container">
+          <div class="loader"></div>
+        </div>
+      </div>
+      <div class="cover rounded-4"><div>
+    </div>
+  ''', unsafe_allow_html=True)
+
+  # Save Image
+  image_rgb = cv2.cvtColor(UPLOADED_FILE, cv2.COLOR_BGR2RGB)
+  image_rgb = Image.fromarray(image_rgb)
+  image_rgb = image_rgb.resize((SIZE, SIZE))
 
   # Preprocess the image
   image = cv2.resize(UPLOADED_FILE, PREPROCESS_SIZE)
@@ -166,14 +188,10 @@ def loading_view():
   prediction_array = np.round(prediction_array, 1)
   PREDICTION = np.array((prediction_array > THRESHOLD).astype(np.uint8))
 
-  # Save Image
-  image_rgb = cv2.cvtColor(UPLOADED_FILE, cv2.COLOR_BGR2RGB)
-  image_rgb = Image.fromarray(image_rgb)
-  image_rgb = image_rgb.resize((SIZE, SIZE))
   UPLOADED_FILE = image_rgb
 
-  time.sleep(1)
-  streamlit_js_eval(js_expressions="parent.window.open('/?nav=try-now&step=finished', name='_self')")
+  # time.sleep(1)
+  # streamlit_js_eval(js_expressions="parent.window.open('/?nav=try-now&step=finished', name='_self')")
 
 def results_view():
   global UPLOADED_FILE
