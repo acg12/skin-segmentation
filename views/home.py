@@ -22,8 +22,10 @@ def load_view():
                     Witness the power of Deep Learning through our app, which takes a dermoscopic image of a skin lesion and performs segmentation to produce a binary mask of the lesion in the image.
                 </div>
             </div>
-            <div class="try-btn-title">
-                <a href="/?nav=try-now" class="try-btn-title-a">Try for free</a>
+            <div class="pb-5 pt-2">
+                <div class="try-btn-title">
+                    <a href="/?nav=try-now" class="try-btn-title-a">Try for free</a>
+                </div>
             </div>
         </div>
     """, unsafe_allow_html=True)
