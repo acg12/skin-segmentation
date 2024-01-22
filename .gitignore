@@ -3,3 +3,6 @@ resunet_checkpoint_7.weights.h5
 evaluation/__pycache__/
 model/__pycache__/
 preprocessing/__pycache__/
+__pycache__/
+views/__pycache__/
+.vscode/

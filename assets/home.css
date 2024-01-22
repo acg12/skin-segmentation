@@ -1,0 +1,100 @@
+@font-face {
+    font-family: manrope-extrabold;
+    src: url("./fonts/Manrope-ExtraBold.ttf");
+}
+
+@font-face {
+    font-family: manrope-regular;
+    src: url("./fonts/Manrope-Regular.ttf");
+}
+
+@font-face {
+    font-family: manrope-semibold;
+    src: url("./fonts/Manrope-SemiBold.ttf");
+}
+
+.main {
+    background-image: url(https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/assets/images/background_home.jpg) !important;
+    background-size: cover !important;
+    background-repeat: no-repeat;
+    background-position-y: -7vh;
+    background-position-x: center;
+    /* background: green; */
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.row-widget {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Main button */
+.try-btn-title {
+    border: none !important;
+    background-color: #05796B !important;
+    padding: 0.3em 3em;
+    border-radius: 5rem !important;
+    box-shadow: 5px 25px 30px rgba(5, 121, 107, 0.2);
+    width: max-content;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    transition: all linear 0.3s;
+}
+
+.try-btn-title > a {
+    font-size: 2rem !important;
+    color: white;
+    text-decoration: none;
+}
+
+.try-btn-title:hover {
+    background: transparent !important;
+    border: 0.2rem solid #05796B !important;
+    /* border-width: 3rem !important;
+    border-color: #05796B !important; */
+}
+
+.try-btn-title:hover > a {
+    color: #05796B !important;
+}
+
+/* Text */
+.text {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Main title */
+.title {
+    font-weight: 800;
+    font-size: 6rem;
+    color: black;
+    text-align: center;
+}
+
+/* Caption title */
+.caption {
+    font-size: 1.8rem;
+    color: #41658A;
+    width: 45vw;
+    text-align: center;
+    font-weight: 400;
+    line-height: 3rem; /* 175% */
+}
+
+.my-container {
+    height: 35vh;
+}
