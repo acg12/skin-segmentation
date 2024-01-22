@@ -98,7 +98,7 @@ def upload_view():
     </div>
   ''', unsafe_allow_html=True)
 
-  UPLOADED_FILE = st.file_uploader("Upload an image", accept_multiple_files=False, type=['png'], label_visibility="collapsed")
+  UPLOADED_FILE = st.file_uploader("Upload an image", accept_multiple_files=False, type=['jpg'], label_visibility="collapsed")
 
   _, col2, _ = st.columns([2, 1, 2])
 
@@ -157,7 +157,7 @@ def loading_view():
   st.markdown(f'''
     <div class="d-flex flex-row justify-content-center" style="height: max-content">
       <div>
-        <img id="preview-img" class="rounded-4" src="data:image/png;base64,{UPLOADED_FILE_BYTES}">
+        <img id="preview-img" class="rounded-4" src="data:image/jpg;base64,{UPLOADED_FILE_BYTES}">
         <div class="loader-container">
           <div class="loader"></div>
         </div>
@@ -190,8 +190,8 @@ def loading_view():
 
   UPLOADED_FILE = image_rgb
 
-  # time.sleep(1)
-  # streamlit_js_eval(js_expressions="parent.window.open('/?nav=try-now&step=finished', name='_self')")
+  time.sleep(1)
+  streamlit_js_eval(js_expressions="parent.window.open('/?nav=try-now&step=finished', name='_self')")
 
 def results_view():
   global UPLOADED_FILE

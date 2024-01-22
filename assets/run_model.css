@@ -7,6 +7,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: start;
+    background-image: url(https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/assets/images/background_try.jpg) !important;
+    background-size: cover;
 }
 
 .progress-bar {
@@ -95,7 +97,7 @@
     width: 20vw;
     height: 106%;
     background-color: rgba(5, 121, 107, 0.2);
-    animation: rise 3s ease-in-out;
+    animation: rise 2s ease-in-out;
     bottom: -6%;
 }
 
@@ -114,6 +116,7 @@
 iframe[title="streamlit_image_select.image_select"] {
     visibility: visible !important;
     height: 20vh !important;
+    width: 30vw;
     display: flex;
     flex-direction: row;
     justify-content: center !important;
