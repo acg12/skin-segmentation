@@ -12,9 +12,9 @@ def inject_custom_css():
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 
-def get_current_route():
+def get_current_route(key):
     try:
-        return st.query_params['nav'][0]
+        return st.query_params[key]
     except:
         return None
 

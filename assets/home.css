@@ -98,8 +98,3 @@
 .my-container {
     height: 35vh;
 }
-
-iframe{
-    visibility: hidden;
-    height: 0rem;
-}

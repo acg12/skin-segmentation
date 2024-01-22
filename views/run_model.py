@@ -1,5 +1,10 @@
 import streamlit as st
-import streamlit.components.v1 as components
+from streamlit.components.v1 import html
+from streamlit_js_eval import streamlit_js_eval
+from streamlit_image_select import image_select
+from streamlit_extras.add_vertical_space import add_vertical_space
+import time
+import urllib
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
@@ -8,14 +13,19 @@ import tensorflow as tf
 from model import residual_unet
 from preprocessing import preprocess
 from evaluation import metrics
+import utils as utl
 
 AXIS = 3
 SIZE = 128
 PREPROCESS_SIZE = (512, 486)
 THRESHOLD = 0.5
 
-PHASE = 1
+SELECTED_IMAGE = None
 UPLOADED_FILE = None
+PREPROCESSED_IMAGE = None
+PREDICTION = None
+MODEL = None
+PHASE = 1
 
 tf.keras.backend.clear_session()
 
@@ -35,10 +45,10 @@ def progress_bar():
   st.markdown(f'''
     <div class="d-flex flex-row justify-content-center mb-4">
       <div class="w-25 d-flex flex-row justify-content-between progress-bar">
-        <div class="d-flex flex-column justify-content-center circle {"active" if PHASE == 1 else ""}">
+        <div class="d-flex flex-column justify-content-center circle {"active" if PHASE <= 3 else ""}">
           1
         </div>
-        <div class="d-flex flex-column justify-content-center circle {"active" if PHASE == 2 else ""}">
+        <div class="d-flex flex-column justify-content-center circle {"active" if PHASE == 2 or PHASE == 3 else ""}">
           2
         </div>
         <div class="d-flex flex-column justify-content-center circle {"active" if PHASE == 3 else ""}">
@@ -49,43 +59,189 @@ def progress_bar():
   ''', unsafe_allow_html=True)
 
 def upload_view():
-  st.markdown('''
-    <div class="h1">
-      Upload Image
-    </div>
-    <div class="second-row my-4">
-      <div class="caption">
-        To get started, simply pick one of the dermoscopic images we have prepared for you to play around with or upload a dermoscopic image of your own!
+  global UPLOADED_FILE
+  global SELECTED_IMAGE
+   
+  st.markdown(f'''
+    <div>
+      <div class="h1">
+        Upload Image
       </div>
-      <div class="next-btn">
-        <button>
-            <img src="../assets/images/chevron.png" width="4rem">
-        </button>
+      <div class="second-row my-4 d-flex flex-row justify-content-between align-items-center">
+        <div class="caption">
+          To get started, simply pick one of the dermoscopic images we have prepared for you to play around with or upload a dermoscopic image of your own!
+        </div>
+        <div class="next-btn p-3 me-5">
+          <a href="/?nav=try-now&step=loading" class="link-a">
+            Next
+            <img src="https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/assets/images/chevron.png" width="30vw">
+          </a>
+        </div>
       </div>
     </div>
   ''', unsafe_allow_html=True)
 
+  SELECTED_IMAGE = image_select(
+    label="",
+    images=[
+        "https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/testing_images/ISIC_0000000.jpg",
+        "https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/testing_images/ISIC_0000001.jpg",
+    ],
+    use_container_width=False,
+  )
+
+  st.markdown(f'''
+    <div class="or-txt">
+      OR
+    </div>
+  ''', unsafe_allow_html=True)
+
+  UPLOADED_FILE = st.file_uploader("Upload an image")
+
+  _, col2, _ = st.columns([2, 1, 2])
+
+  if UPLOADED_FILE is not None:
+    bytes_data = UPLOADED_FILE.getvalue()
+    image = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image_rgb = Image.fromarray(image_rgb)
+
+    resized = image_rgb.resize((SIZE, SIZE))
+    fig1, ax1 = plt.subplots(figsize=(2,2))
+    ax1.imshow(resized)
+    ax1.axis('off')
+    with col2:
+      st.pyplot(fig1)
+
+    UPLOADED_FILE = image
+    print(f'Uploaded file size: {UPLOADED_FILE.shape}')
+
 def loading_view():
-  pass
+  global UPLOADED_FILE
+  global SELECTED_IMAGE
+  global PREPROCESSED_IMAGE
+  global PREDICTION
+  global MODEL
+
+  st.markdown(f'''
+    <div class="h1">
+      Performing segmentation...
+    </div>
+  ''', unsafe_allow_html=True)
+
+  add_vertical_space(5)
+
+  st.markdown(f'''
+    <div class="d-flex flex-row justify-content-center">
+      <div class="loader"></div>
+    </div>
+  ''', unsafe_allow_html=True)
+
+  # Read the file
+  if UPLOADED_FILE is None:
+    req = urllib.request.urlopen(str(SELECTED_IMAGE))
+    arr = np.asarray(bytearray(req.read()), dtype=np.uint8)
+    img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+    UPLOADED_FILE = img
+    print(UPLOADED_FILE.shape)
+
+  if UPLOADED_FILE is None:
+    streamlit_js_eval(js_expressions="parent.window.open('/?nav=try-now', name='_self')")
+    return
+
+  # Preprocess the image
+  image = cv2.resize(UPLOADED_FILE, PREPROCESS_SIZE)
+  dst = preprocess.remove_hair(image)
+  gray = preprocess.shade_of_gray_cc(dst)
+  gray_img = cv2.cvtColor(gray, cv2.COLOR_BGR2RGB)
+  gray_img = Image.fromarray(gray_img)
+  gray_img = gray_img.resize((SIZE, SIZE))
+  PREPROCESSED_IMAGE = gray_img
+
+  # Predict Image
+  test_img = Image.fromarray(gray)
+  test_img = test_img.resize((SIZE, SIZE))
+  test_img_input = np.expand_dims(test_img, 0) / 255
+  prediction_array = MODEL.predict(test_img_input)[0,:,:,0]
+  prediction_array = np.round(prediction_array, 1)
+  PREDICTION = np.array((prediction_array > THRESHOLD).astype(np.uint8))
+
+  # Save Image
+  image_rgb = cv2.cvtColor(UPLOADED_FILE, cv2.COLOR_BGR2RGB)
+  image_rgb = Image.fromarray(image_rgb)
+  image_rgb = image_rgb.resize((SIZE, SIZE))
+  UPLOADED_FILE = image_rgb
+
+  time.sleep(1)
+  streamlit_js_eval(js_expressions="parent.window.open('/?nav=try-now&step=finished', name='_self')")
 
 def results_view():
-  pass
+  global UPLOADED_FILE
+  global PREPROCESSED_IMAGE
+  global PREDICTION
+
+  if UPLOADED_FILE is None:
+    streamlit_js_eval(js_expressions="parent.window.open('/?nav=try-now', name='_self')")
+    return
+
+  col1, col2, col3 = st.columns([1, 1, 1])
+
+  fig1, ax1 = plt.subplots(figsize=(2,2))
+  ax1.imshow(UPLOADED_FILE)
+  ax1.axis('off') 
+
+  fig2, ax2 = plt.subplots(figsize=(2,2))
+  ax2.imshow(PREPROCESSED_IMAGE)
+  ax2.axis('off')
+
+  fig3, ax3 = plt.subplots(figsize=(2,2))
+  ax3.imshow(PREDICTION, cmap='gray')
+  ax3.axis('off')
+
+  with col1:
+    st.subheader('Original Image')
+    st.pyplot(fig1)
+  
+  with col2:
+    st.subheader('DullRazor + Shades of Gray')
+    st.pyplot(fig2)
+
+  with col3:
+    st.subheader('Prediction Mask')
+    st.pyplot(fig3)
 
 def load_view():
-  model = load_model()
+  global PHASE
+  global MODEL
+  route = utl.get_current_route("step")
+  MODEL = load_model()
 
-  progress_bar()
-
-  if PHASE == 1:
+  if route == None:
+     PHASE = 1
+     progress_bar()
      upload_view()
-  elif PHASE == 2:
+  elif route == "loading":
+     PHASE = 2
+     progress_bar()
      loading_view()
   else:
+     PHASE = 3
+     progress_bar()
      results_view()
 
-  # st.title('Skin Lesion Segmentation')
-
-  uploaded_file = st.file_uploader("Upload an image")
+  html('''
+        <script>
+            var navigationTabs = window.parent.document.getElementsByClassName("link-a");
+            var cleanNavbar = function(navigation_element) {
+                navigation_element.removeAttribute('target')
+                console.log(navigation_element)
+            }
+            
+            for (var i = 0; i < navigationTabs.length; i++) {
+                cleanNavbar(navigationTabs[i]);
+            }
+        </script>
+    ''')
       
   # original_img, preprocessed_img, pred_img = st.columns([1,1,1])
 

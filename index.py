@@ -9,10 +9,10 @@ utl.inject_custom_css()
 utl.navbar_component()
 
 def navigation():
-    route = utl.get_current_route()
-    if route == "h":
+    route = utl.get_current_route("nav")
+    if route == "home":
         home.load_view()
-    elif route == "t":
+    elif route == "try-now":
         run_model.load_view()
     else:
         home.load_view()

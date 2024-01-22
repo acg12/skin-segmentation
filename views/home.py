@@ -1,6 +1,5 @@
 import streamlit as st
 from streamlit_extras.add_vertical_space import add_vertical_space
-from streamlit_extras.switch_page_button import switch_page
 from streamlit.components.v1 import html
 
 def load_view():
