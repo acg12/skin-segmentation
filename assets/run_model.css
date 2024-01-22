@@ -1,0 +1,41 @@
+.main {
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+}
+
+.progress-bar {
+    max-width: 200px;
+}
+
+.circle {
+    background: #F6F6F7 !important;
+    border-radius: 5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.active {
+    background: #D3D0CB !important;
+}
+
+/* Title */
+.h1 {
+    font-weight: 600;
+    font-size: 3rem;
+}
+
+/* Caption */
+.caption {
+    font-size: 1.5rem;
+    font-weight: 400;
+    width: 50vw;
+}

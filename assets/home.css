@@ -14,9 +14,10 @@
 }
 
 .main {
-    background-image: url(https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/assets/images/background.jpg) !important;
+    background-image: url(https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/assets/images/background_home.jpg) !important;
     background-size: cover !important;
-    background-position-y: top;
+    background-repeat: no-repeat;
+    background-position-y: -7vh;
     background-position-x: center;
     /* background: green; */
     width: 100vw;
@@ -48,13 +49,24 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    transition: all linear 0.3s;
 }
 
 .try-btn-title > a {
-    font-size: 32px !important;
-    /* font-family: manrope-semibold !important; */
+    font-size: 2rem !important;
     color: white;
     text-decoration: none;
+}
+
+.try-btn-title:hover {
+    background: transparent !important;
+    border: 0.2rem solid #05796B !important;
+    /* border-width: 3rem !important;
+    border-color: #05796B !important; */
+}
+
+.try-btn-title:hover > a {
+    color: #05796B !important;
 }
 
 /* Text */
@@ -67,22 +79,24 @@
 
 /* Main title */
 .title {
-    font-weight: 700;
-    font-size: 60px;
+    font-weight: 800;
+    font-size: 6rem;
     color: black;
     text-align: center;
 }
 
 /* Caption title */
 .caption {
-    font-size: 20px;
+    font-size: 1.8rem;
     color: #41658A;
-    width: 50vw;
+    width: 45vw;
     text-align: center;
+    font-weight: 400;
+    line-height: 3rem; /* 175% */
 }
 
 .my-container {
-    height: 22vh;
+    height: 35vh;
 }
 
 iframe{

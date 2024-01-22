@@ -20,7 +20,7 @@ def load_view():
             </div>
             <div class="text">
                 <div class="caption">
-                    Witness the power of Deep Learning through our app, which takes a dermoscopic image of a skin lesion and performs segmentation to produce a binary mask of where the lesion is in the image.
+                    Witness the power of Deep Learning through our app, which takes a dermoscopic image of a skin lesion and performs segmentation to produce a binary mask of the lesion in the image.
                 </div>
             </div>
             <div class="try-btn-title">
