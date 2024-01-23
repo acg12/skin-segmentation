@@ -3,7 +3,6 @@ from streamlit.components.v1 import html
 from streamlit_js_eval import streamlit_js_eval
 from streamlit_image_select import image_select
 from streamlit_extras.add_vertical_space import add_vertical_space
-import image2base64
 import time
 import base64
 import io
@@ -64,6 +63,7 @@ def progress_bar():
 
 def upload_view():
   global UPLOADED_FILE
+  global UPLOADED_FILE_BYTES
   global SELECTED_IMAGE
    
   st.markdown(f'''
@@ -90,6 +90,9 @@ def upload_view():
     images=[
         "https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/testing_images/ISIC_0000000.jpg",
         "https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/testing_images/ISIC_0000001.jpg",
+        "https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/testing_images/ISIC_0000043.jpg",
+        "https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/testing_images/ISIC_0000069.jpg",
+        "https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/testing_images/ISIC_0000165.jpg",
     ],
     use_container_width=False,
   )
@@ -119,6 +122,7 @@ def upload_view():
       st.pyplot(fig1)
 
     UPLOADED_FILE = image
+    UPLOADED_FILE_BYTES = base64.b64encode(buffer.tobytes()).decode('utf-8')
     print(f'Uploaded file size: {UPLOADED_FILE.shape}')
 
 def loading_view():
@@ -243,11 +247,13 @@ def results_view():
       <div class="third-row d-flex flex-row justify-content-around">
         <div class="img-container w-75 d-flex flex-row justify-content-center mt-5">
           <div class="my-container">
-            <img id="original-img" class="shadow rounded-4" src="data:image/png;base64,{uploaded_bytes}">
+            <img id="original-img" class="shadow-lg rounded-4" src="data:image/png;base64,{uploaded_bytes}">
           </div>
           <div class="my-container">
+            <img id="top-left" src="https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/assets/images/top left.png">
+            <img id="bottom-right" src="https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/assets/images/bottom right.png">
             <img id="predicted-img" class="rounded-4" src="data:image/png;base64,{prediction_bytes}">
-            <img id="under-img" class="shadow rounded-4" src="data:image/png;base64,{uploaded_bytes}">
+            <img id="under-img" class="shadow-lg rounded-4" src="data:image/png;base64,{uploaded_bytes}">
           </div>
         </div>
       </div>
