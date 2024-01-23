@@ -102,12 +102,19 @@ iframe[title="streamlit_image_select.image_select"] {
     width: 20vw;
 }
 
+.long-animation {
+    animation: rise 15s ease-in-out;
+}
+
+.short-animation {
+    animation: rise 2s ease-in-out;
+}
+
 .cover {
     position: absolute;
     width: 20vw;
     height: 106%;
     background-color: rgb(15, 209, 186, 0.2);
-    animation: rise 2s ease-in-out;
     bottom: -6%;
 }
 

@@ -27,6 +27,7 @@ UPLOADED_FILE = None
 PREPROCESSED_IMAGE = None
 PREDICTION = None
 UPLOADED_FILE_BYTES = None
+LONG_LOADING = False
 MODEL = None
 PHASE = 1
 
@@ -65,6 +66,7 @@ def upload_view():
   global UPLOADED_FILE
   global UPLOADED_FILE_BYTES
   global SELECTED_IMAGE
+  global LONG_LOADING
    
   st.markdown(f'''
     <div>
@@ -85,17 +87,22 @@ def upload_view():
     </div>
   ''', unsafe_allow_html=True)
 
-  SELECTED_IMAGE = image_select(
-    label="",
-    images=[
+  test_images = [
         "https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/testing_images/ISIC_0000000.jpg",
         "https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/testing_images/ISIC_0000001.jpg",
         "https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/testing_images/ISIC_0000043.jpg",
         "https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/testing_images/ISIC_0000069.jpg",
         "https://raw.githubusercontent.com/DnYAlv/segmentation_app/angela/frontend/testing_images/ISIC_0000165.jpg",
-    ],
+    ]
+
+  SELECTED_IMAGE = image_select(
+    label="",
+    images=test_images,
     use_container_width=False,
   )
+
+  if SELECTED_IMAGE == test_images[2]:
+    LONG_LOADING = True
 
   st.markdown(f'''
     <div class="or-txt">
@@ -131,6 +138,7 @@ def loading_view():
   global PREPROCESSED_IMAGE
   global PREDICTION
   global UPLOADED_FILE_BYTES
+  global LONG_LOADING
   global MODEL
 
   st.markdown(f'''
@@ -172,7 +180,7 @@ def loading_view():
           <div class="loader"></div>
         </div>
       </div>
-      <div class="cover rounded-4"><div>
+      <div class="cover rounded-4 {"long-animation" if LONG_LOADING else "short-animation"}"><div>
     </div>
   ''', unsafe_allow_html=True)
 
@@ -203,10 +211,10 @@ def loading_view():
   prediction = Image.merge('RGB', [prediction]*3) 
   # prediction = prediction.convert("P")
   PREDICTION = prediction
-  print(f'prediction {PREDICTION.mode}')
+  # print(f'prediction {PREDICTION.mode}')
 
   UPLOADED_FILE = image_rgb
-  print(f'uploaded {UPLOADED_FILE.mode}')
+  # print(f'uploaded {UPLOADED_FILE.mode}')
 
   time.sleep(1)
   streamlit_js_eval(js_expressions="parent.window.open('/?nav=try-now&step=finished', name='_self')")
@@ -263,32 +271,34 @@ def results_view():
 def load_view():
   global PHASE
   global MODEL
+  global LONG_LOADING
   route = utl.get_current_route("step")
   MODEL = load_model()
 
   if route == None:
-     PHASE = 1
-     progress_bar()
-     upload_view()
+    PHASE = 1
+    LONG_LOADING = False
+    progress_bar()
+    upload_view()
   elif route == "loading":
-     PHASE = 2
-     progress_bar()
-     loading_view()
+    PHASE = 2
+    progress_bar()
+    loading_view()
   else:
-     PHASE = 3
-     progress_bar()
-     results_view()
+    PHASE = 3
+    progress_bar()
+    results_view()
 
   html('''
-        <script>
-            var navigationTabs = window.parent.document.getElementsByClassName("link-a");
-            var cleanNavbar = function(navigation_element) {
-                navigation_element.removeAttribute('target')
-                console.log(navigation_element)
-            }
-            
-            for (var i = 0; i < navigationTabs.length; i++) {
-                cleanNavbar(navigationTabs[i]);
-            }
-        </script>
+    <script>
+        var navigationTabs = window.parent.document.getElementsByClassName("link-a");
+        var cleanNavbar = function(navigation_element) {
+            navigation_element.removeAttribute('target')
+            console.log(navigation_element)
+        }
+        
+        for (var i = 0; i < navigationTabs.length; i++) {
+            cleanNavbar(navigationTabs[i]);
+        }
+    </script>
     ''')
