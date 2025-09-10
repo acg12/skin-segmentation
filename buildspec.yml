@@ -9,7 +9,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...          
-      - docker build -t skin-segment-app .
+      - docker build -t skin-segment-app:latest .
       - docker tag skin-segment-app:latest 886436929815.dkr.ecr.ap-southeast-1.amazonaws.com/skin-segment-app:latest
   post_build:
     commands:
