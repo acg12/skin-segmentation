@@ -8,14 +8,13 @@ WORKDIR /app
 
 
 
-COPY requirements.txt requirements.txt
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends curl
 
-RUN pip install -r requirements.txt &&\
+# Now, copy and install Python dependencies.
+COPY requirements.txt .
 
-    apt-get update -y &&\
-
-    apt-get install curl -y 
-
+RUN pip install --no-cache-dir -r requirements.txt
 
 
 COPY . .
