@@ -2,8 +2,8 @@ version: 0.2
 phases:
   install:
     commands:
-      - export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
-      - export IMAGE_URL=${IMAGE_URL}
+      - export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
+      - export IMAGE_URL=$IMAGE_URL
   pre_build:
     commands:
       - echo "cd into $CODEBUILD_SRC_DIR/"
