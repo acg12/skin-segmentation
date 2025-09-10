@@ -1,33 +1,30 @@
 version: 0.2
 phases:
-  install:
-    commands:
-      - export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
-      - export IMAGE_URL=$IMAGE_URL
   pre_build:
     commands:
       - echo "cd into $CODEBUILD_SRC_DIR/"
       - cd $CODEBUILD_SRC_DIR
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $IMAGE_URL
+      - aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 886436929815.dkr.ecr.ap-southeast-1.amazonaws.com
   build:
     commands:
       - echo Build started on `date`
-      - echo Building the Docker image...
-      - docker build -t $CONTAINER_NAME .
-      - docker tag $REPO_NAME $IMAGE_URL/$REPO_NAME
+      - echo Building the Docker image...          
+      - docker build -t skin-segment-app .
+      - docker tag skin-segment-app:latest 886436929815.dkr.ecr.ap-southeast-1.amazonaws.com/skin-segment-app:latest
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image..
-      - docker push $IMAGE_URL/$REPO_NAME
-      - echo "imagedefinitions.json > [{\"name\":\"$CONTAINER_NAME\",\"imageUri\":\"$IMAGE_URL/$REPO_NAME\"}]" > imagedefinitions.json
-      - printf '[{"name":"%s","imageUri":"%s/%s"}]' "$CONTAINER_NAME" "$IMAGE_URL" "$REPO_NAME" > imagedefinitions.json
+      - docker push 886436929815.dkr.ecr.ap-southeast-1.amazonaws.com/skin-segment-app:latest
+      - cd $CODEBUILD_SRC_DIR
+      - echo "imagedefinitions.json > [{\"name\":\"skin-segment-app\",\"imageUri\":\"886436929815.dkr.ecr.ap-southeast-1.amazonaws.com/skin-segment-app:latest\"}]" > imagedefinitions.json
+      - printf "[{\"name\":\"skin-segment-app\",\"imageUri\":\"886436929815.dkr.ecr.ap-southeast-1.amazonaws.com/skin-segment-app:latest\"}]" > imagedefinitions.json
 env:
   variables:
     AWS_ACCOUNT_ID: 886436929815
     AWS_DEFAULT_REGION: ap-southeast-1
     CONTAINER_NAME: skin-segment-app
-    IMAGE_URL: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+    IMAGE_URL: 886436929815.dkr.ecr.ap-southeast-1.amazonaws.com
     REPO_NAME: skin-segment-app:latest
 artifacts:
   base-directory: $CODEBUILD_SRC_DIR
@@ -37,4 +34,4 @@ artifacts:
     - scripts/start_app.sh
     - scripts/stop_app.sh
   discard-paths: no
-  name: "."
+  name: '.'
