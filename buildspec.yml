@@ -1,10 +1,10 @@
-version: 0.1
+version: 0.2
 phases:
   pre_build:
     commands:
       - echo "cd into $CODEBUILD_SRC_DIR/"
       - cd $CODEBUILD_SRC_DIR
-      - aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 886436929815.dkr.ecr.ap-southeast-1.amazonaws.com
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $IMAGE_URL
   build:
     commands:
       - echo Build started on `date`
